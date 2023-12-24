@@ -8,9 +8,6 @@
 #define VERSION "6.4"
 #define MANPREFIX "/usr/local/share/man"
 
-static const char *SOURCE[]={"drw.c", "dwm.c", "util.c"};
-static const char *OBJECT[]={"drw.o", "dwm.o", "util.o"};
-
 #define CFLAGS	"-g", 						\
 				"-std=c99", 				\
 				"-pedantic",				\
@@ -31,23 +28,26 @@ static const char *OBJECT[]={"drw.o", "dwm.o", "util.o"};
 				"-lXft", 			\
 				"-lXrender"
 
+static const char *SOURCES[]={"drw.c", "dwm.c", "util.c"};
+static const char *OBJECTS[]={"drw.o", "dwm.o", "util.o"};
+
 char *cc(void){
     char *result = getenv("CC");
     return result ? result : "cc";
 }
 
-#if 0
 void BuildObj(void) {
-	for(int i=0; i <= 3; i++ ){
-	    CMD(cc(), "-o", OBJ[i], "-c", SRC[i]);
+	for(int i=0; i <= 2; i++ ){
+	    CMD(cc(), "-c", CFLAGS, SOURCES[i]);
 	}
 }
-#endif
 
 int BuildBin(void) {
-    CMD(cc(), "-o", BIN, SOURCE[0], SOURCE[1], SOURCE[2], CFLAGS, LDFLAGS, NULL );
-	return EXIT_FAILURE;
+	for(int i=0; i <= 2; i++ ){
+    	CMD(cc(), "-o", BIN, OBJECTS[0], OBJECTS[1], OBJECTS[2], LDFLAGS, NULL );
+	}
 }
+
 void Install(void) {
 	CMD("doas", "cp", "-f", BIN, PREFIX);
 }
@@ -57,14 +57,14 @@ void Remove(void) {
 }
 
 void Clean(void) {
-	CMD("rm", OBJECT, BIN, "c.old");
+	CMD("rm", OBJECTS, BIN, "c.old");
 }
 
 
 int main(int argc, char *argv[]) {
     GO_REBUILD_URSELF(argc, argv);
     if (argc <= 1){
-//		BuildObj();
+		BuildObj();
 		BuildBin();
 		return EXIT_SUCCESS;
 	}
