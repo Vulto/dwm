@@ -3,6 +3,7 @@
 
 
 #define BIN "dwm"
+#define OLD "c.old"
 #define PREFIX "/usr/local/bin/"
 #define VERSION "6.4"
 #define MANPREFIX "/usr/local/share/man"

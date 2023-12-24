@@ -40,11 +40,8 @@ static const Rule rules[] = {
 	{ "Open file",  NULL,   NULL,		0,      1,		-1 },
 	{ "YAD",        NULL,   NULL,		0,      1,		-1 },
 	{ "sent",       NULL,   NULL,		0,      1,		-1 },
-	{ "st",         NULL,   NULL,		0,	1,		-1 },
-	{ "Sxiv",       NULL,   NULL,		0,	1,	        -1 },
-	{ "rdesktop",   NULL,   NULL,		1 << 3,	0,		-1 },
-	{ "retroarch",  NULL,   NULL,		0,	1,		-1 },
-	{ "Steam",	NULL,   NULL,		0,      1,		-1 },
+	{ "st",         NULL,   NULL,		0,		1,		-1 },
+	{ "imv",        NULL,   NULL,		0,		1,      -1 },
 };
 
 /* layout(s) */
@@ -52,6 +49,7 @@ static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
+/*
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "+1%",  NULL };
 static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "-1%",  NULL };
 static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
@@ -63,6 +61,7 @@ static const char *audionext[] = { "/usr/bin/playerctl", "next",	NULL };
 static const char *calculator[] = { "/home/vulto/sources/scripts/asd",	NULL };
 static const char *mixer[] = { "/home/vulto/sources/scripts/mixer",	NULL };
 static const char *files[] = { "st", "-g", "100x34", "-e", "cfiles",	NULL };
+*/
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -89,7 +88,7 @@ static const char *termcmd[] = { "st", NULL };
 static Key keys[] = {
 	/* modifier         key				function	argument */
 	{ MODKEY,           XK_d,			spawn,		{.v = dmenucmd } },
-	{ MODKEY,           XK_Return,			spawn,		{.v = termcmd } },
+	{ MODKEY,           XK_Return,		spawn,		{.v = termcmd } },
 	{ MODKEY,           XK_b,			togglebar,	{0} },
 	{ MODKEY,           XK_j,			focusstack,	{.i = +1 } },
 	{ MODKEY,           XK_k,			focusstack,	{.i = -1 } },
@@ -97,23 +96,21 @@ static Key keys[] = {
 	{ MODKEY,           XK_o,			incnmaster,	{.i = -1 } },
 	{ MODKEY,           XK_h,			setmfact,	{.f = -0.05} },
 	{ MODKEY,           XK_l,			setmfact,	{.f = +0.05} },
-	{ MODKEY|ShiftMask, XK_Return,			zoom,		{0} },
+	{ MODKEY|ShiftMask, XK_Return,		zoom,		{0} },
 	{ MODKEY,           XK_Tab,			view,		{0} },
 	{ MODKEY,           XK_c,			killclient,	{0} },
 	{ MODKEY,           XK_f,			setlayout,	{.v = &layouts[0]} },
 	{ MODKEY,           XK_t,			setlayout,	{.v = &layouts[1]} },
 	{ MODKEY,           XK_m,			setlayout,	{.v = &layouts[2]} },
-	{ MODKEY,           XK_space,			setlayout,	{0} },
-	{ MODKEY,           XK_minus,			setgaps,	{.i = -1 } },
-	{ MODKEY,           XK_equal,			setgaps,	{.i = +1 } },
-	{ MODKEY|ShiftMask, XK_equal,			setgaps,	{.i = 0  } },
-	{ MODKEY|ShiftMask, XK_space,			togglefloating,	{0} },
+	{ MODKEY,           XK_space,		setlayout,	{0} },
+	{ MODKEY|ShiftMask, XK_space,		togglefloating,	{0} },
 	{ MODKEY,           XK_0,			view,		{.ui = ~0 } },
 	{ MODKEY|ShiftMask, XK_0,			tag,		{.ui = ~0 } },
-	{ MODKEY,           XK_comma,			focusmon,	{.i = -1 } },
-	{ MODKEY,           XK_period,			focusmon,	{.i = +1 } },
-	{ MODKEY|ShiftMask, XK_comma,			tagmon,		{.i = -1 } },
-	{ MODKEY|ShiftMask, XK_period,			tagmon,		{.i = +1 } },
+	{ MODKEY,           XK_comma,		focusmon,	{.i = -1 } },
+	{ MODKEY,           XK_period,		focusmon,	{.i = +1 } },
+	{ MODKEY|ShiftMask, XK_comma,		tagmon,		{.i = -1 } },
+	{ MODKEY|ShiftMask, XK_period,		tagmon,		{.i = +1 } },
+/*
 	{ MODKEY,           XK_a,			spawn,		{.v = calculator } }, 	
 	{ MODKEY,           XK_p,			spawn,		{.v = mixer } }, 	
 	{ MODKEY,           XK_u,			spawn,		{.v = files } }, 	
@@ -123,6 +120,7 @@ static Key keys[] = {
 	{ 0,                XF86XK_AudioPrev,		spawn,		{.v = audioprev } },
 	{ 0,                XF86XK_AudioPause,		spawn,		{.v = audioplay } },
 	{ 0,                XF86XK_AudioNext,		spawn,		{.v = audionext } }, 	
+*/
 	TAGKEYS(            XK_1,                      0)
 	TAGKEYS(            XK_2,                      1)
 	TAGKEYS(            XK_3,                      2)
