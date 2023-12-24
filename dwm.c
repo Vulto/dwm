@@ -34,6 +34,7 @@
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
+#include <X11/XKBlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
 #ifdef XINERAMA
@@ -383,23 +384,33 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
 void
 arrange(Monitor *m)
 {
-	if (m)
-		showhide(m->stack);
-	else for (m = mons; m; m = m->next)
-		showhide(m->stack);
-	if (m) {
-		arrangemon(m);
-		restack(m);
-	} else for (m = mons; m; m = m->next)
-		arrangemon(m);
+        if (m)
+                showhide(m->stack);
+        else
+                for (m = mons; m; m = m->next)
+                        showhide(m->stack);
+        if (m) {
+                arrangemon(m);
+                restack(m);
+        } else
+                for (m = mons; m; m = m->next) {
+                        if (m->lt[m->sellt]->symbol)
+                                strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol - 1);
+                        m->ltsymbol[sizeof m->ltsymbol - 1] = '\0';  // Ensure null-termination
+                }
 }
 
 void
 arrangemon(Monitor *m)
 {
-	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
-	if (m->lt[m->sellt]->arrange)
-		m->lt[m->sellt]->arrange(m);
+    if (m->lt[m->sellt]->symbol) {
+        size_t symbol_len = strnlen(m->lt[m->sellt]->symbol, sizeof m->ltsymbol - 1);
+        strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, symbol_len);
+        m->ltsymbol[symbol_len] = '\0';  // Ensure null-termination
+    }
+
+    if (m->lt[m->sellt]->arrange)
+        m->lt[m->sellt]->arrange(m);
 }
 
 void
@@ -836,30 +847,35 @@ focusmon(const Arg *arg)
 	focus(NULL);
 }
 
-void
-focusstack(const Arg *arg)
+void focusstack(const Arg *arg)
 {
-	Client *c = NULL, *i;
+    Client *c = NULL, *i;
 
-	if (!selmon->sel || (selmon->sel->isfullscreen && setfullscreen))
-		return;
-	if (arg->i > 0) {
-		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
-		if (!c)
-			for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
-	} else {
-		for (i = selmon->clients; i != selmon->sel; i = i->next)
-			if (ISVISIBLE(i))
-				c = i;
-		if (!c)
-			for (; i; i = i->next)
-				if (ISVISIBLE(i))
-					c = i;
-	}
-	if (c) {
-		focus(c);
-		restack(selmon);
-	}
+    if (!selmon->sel || selmon->sel->isfullscreen) {
+        if (selmon->sel && selmon->sel->isfullscreen) {
+            setfullscreen(selmon->sel, 1);
+        }
+        return;
+    }
+
+    if (arg->i > 0) {
+        for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+        if (!c)
+            for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
+    } else {
+        for (i = selmon->clients; i != selmon->sel; i = i->next)
+            if (ISVISIBLE(i))
+                c = i;
+        if (!c)
+            for (; i; i = i->next)
+                if (ISVISIBLE(i))
+                    c = i;
+    }
+
+    if (c) {
+        focus(c);
+        restack(selmon);
+    }
 }
 
 Atom
@@ -987,20 +1003,22 @@ isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info)
 }
 #endif /* XINERAMA */
 
+
 void
 keypress(XEvent *e)
 {
-	unsigned int i;
-	KeySym keysym;
-	XKeyEvent *ev;
+    unsigned int i;
+    KeySym keysym;
+    XKeyEvent *ev;
 
-	ev = &e->xkey;
-	keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
-	for (i = 0; i < LENGTH(keys); i++)
-		if (keysym == keys[i].keysym
-		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
-		&& keys[i].func)
-			keys[i].func(&(keys[i].arg));
+    ev = &e->xkey;
+    keysym = XkbKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0, 0);
+
+    for (i = 0; i < LENGTH(keys); i++)
+        if (keysym == keys[i].keysym
+            && CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
+            && keys[i].func)
+            keys[i].func(&(keys[i].arg));
 }
 
 void
@@ -1498,18 +1516,24 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
-void
-setlayout(const Arg *arg)
+void setlayout(const Arg *arg)
 {
-	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
-		selmon->sellt ^= 1;
-	if (arg && arg->v)
-		selmon->lt[selmon->sellt] = (Layout *)arg->v;
-	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
-	if (selmon->sel)
-		arrange(selmon);
-	else
-		drawbar(selmon);
+    if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
+        selmon->sellt ^= 1;
+
+    if (arg && arg->v)
+        selmon->lt[selmon->sellt] = (Layout *)arg->v;
+
+    if (selmon->lt[selmon->sellt]->symbol) {
+        size_t symbol_len = strnlen(selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol - 1);
+        strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, symbol_len);
+        selmon->ltsymbol[symbol_len] = '\0';  // Ensure null-termination
+    }
+
+    if (selmon->sel)
+        arrange(selmon);
+    else
+        drawbar(selmon);
 }
 
 /* arg > 1.0 will set mfact absolutely */
