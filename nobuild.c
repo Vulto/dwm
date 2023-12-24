@@ -48,7 +48,7 @@ int BuildBin(void) {
 	return EXIT_FAILURE;
 }
 void Install(void) {
-	CMD("doas", "cp", BIN, PREFIX);
+	CMD("doas", "cp", "-f", BIN, PREFIX);
 }
 
 void Remove(void) {
