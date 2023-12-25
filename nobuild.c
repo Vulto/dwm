@@ -1,7 +1,6 @@
 #define NOBUILD_IMPLEMENTATION
 #include "./nobuild.h"
 
-
 #define BIN "dwm"
 #define OLD "c.old"
 #define PREFIX "/usr/local/bin/"
@@ -59,7 +58,6 @@ void Remove(void) {
 void Clean(void) {
 	CMD("rm", OBJECTS, BIN, "c.old");
 }
-
 
 int main(int argc, char *argv[]) {
     GO_REBUILD_URSELF(argc, argv);
