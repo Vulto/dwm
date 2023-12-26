@@ -20,6 +20,7 @@ static const char *colors[][3]      = {
 /* Auto start some programms */
 static const char *const autostart[] = {
 	"dwmblocks", NULL,
+	"xsetkbmap", "-option", "caps:escape", NULL,
 	"xset", "r","rate","180","25", "m","0","0", "-dpms", "s", "off", NULL,
 	"unclutter","--timeout","1", NULL,
 	NULL /* terminate */
@@ -29,18 +30,19 @@ static const char *const autostart[] = {
 static const char *tags[] = { " ", " ", " ", " " };
 
 static const Rule rules[] = {
-	/* xprop(1):
-	 *	WM_CLASS(STRING) = instance, class
-	 *	WM_NAME(STRING) = title
-	 *	1 << 8 means tag to 9th space
-	 *	-1 means tag window to all spaces
-	 */
-	/* class      instance	title	tags_mask	sfloating	monitor */
-	{ "Open file",  NULL,   NULL,		0,      1,		-1 },
-	{ "YAD",        NULL,   NULL,		0,      1,		-1 },
-	{ "sent",       NULL,   NULL,		0,      1,		-1 },
+/* xprop(1):
+ *	WM_CLASS(STRING) = instance, class
+ *	WM_NAME(STRING) = title
+ *	1 << 8 means tag to 9th space
+ *	-1 means tag window to all spaces
+*/
+
+/* class      instance	title	tags_mask	sfloating	monitor */
+	{ "Open file",  NULL,   NULL,		0,		1,		-1 },
+	{ "YAD",        NULL,   NULL,		0,		1,		-1 },
+	{ "sent",       NULL,   NULL,		0,		1,		-1 },
 	{ "st",         NULL,   NULL,		0,		1,		-1 },
-	{ "imv",        NULL,   NULL,		0,		1,      -1 },
+	{ "imv",        NULL,   NULL,		0,		1,		-1 },
 };
 
 /* layout(s) */
