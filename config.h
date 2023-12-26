@@ -19,8 +19,7 @@ static const char *colors[][3]      = {
 
 /* Auto start some programms */
 static const char *const autostart[] = {
-	"dwmblocks", NULL,
-	"xsetkbmap", "-option", "caps:escape", NULL,
+	"setxkbmap", "-option", "caps:swapescape", NULL,
 	"xset", "r","rate","180","25", "m","0","0", "-dpms", "s", "off", NULL,
 	"unclutter","--timeout","1", NULL,
 	NULL /* terminate */
@@ -64,7 +63,7 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
-
+#define STATUSBAR "dwmblocks"
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -130,4 +129,7 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
 };
