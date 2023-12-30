@@ -50,6 +50,7 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
+	{ ">>",      centeredfloatingmaster },
 	{ "",      tile },    /* first entry is default */
 	{ "",      NULL },    /* no layout function means floating behavior */
 	{ " ",     monocle },
@@ -83,6 +84,7 @@ static Key keys[] = {
     { ControlMask, 		XK_1,						setlayout,		{.v = &layouts[0]} },
     { ControlMask, 		XK_2,						setlayout,		{.v = &layouts[1]} },
     { ControlMask, 		XK_3,						setlayout,		{.v = &layouts[2]} },
+	{ MODKEY,			XK_o,						setlayout,      {.v = &layouts[4]} },
     { MODKEY,			XK_space,					togglefloating, {0} },
     { MODKEY,           XK_0,						view,			{.ui = ~0 } },
     { MODKEY|ShiftMask, XK_0,						tag,			{.ui = ~0 } },
