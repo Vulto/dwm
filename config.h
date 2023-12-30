@@ -19,6 +19,7 @@ static const char *colors[][3]      = {
 
 /* Auto start some programms */
 static const char *const autostart[] = {
+	"stmux", NULL,
 	"setxkbmap", "-option", "caps:swapescape", NULL,
 	"xset", "r","rate","180","25", "m","0","0", "-dpms", "s", "off", NULL,
 	"unclutter","--timeout","1", NULL,
