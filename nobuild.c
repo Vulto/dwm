@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		} else {
-			printf("Usage: %s [-d] [-r] [-f]\n", argv[0]);
+			printf("Usage: %s [-r] [-i] [-c]\n", argv[0]);
 		}
 	}
 	return EXIT_SUCCESS;
