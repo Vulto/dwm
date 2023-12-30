@@ -162,10 +162,10 @@ static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
-static void drawbar(Monitor *m);
-static void drawbars(void);
+//static void drawbar(Monitor *m);
+//static void drawbars(void);
 static void enternotify(XEvent *e);
-static void expose(XEvent *e);
+//static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
@@ -213,7 +213,7 @@ static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
-static void togglebar(const Arg *arg);
+//static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -258,7 +258,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
-	[Expose] = expose,
+//	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
 	[MappingNotify] = mappingnotify,
@@ -712,7 +712,7 @@ createmon(void)
 	m->mfact = mfact;
 	m->nmaster = nmaster;
 	m->showbar = showbar;
-	m->topbar = topbar;
+//	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -767,6 +767,7 @@ dirtomon(int dir)
 	return m;
 }
 
+#if 0
 void
 drawbar(Monitor *m)
 {
@@ -844,6 +845,7 @@ drawbars(void)
 	for (m = mons; m; m = m->next)
 		drawbar(m);
 }
+#endif // DRAWBAR
 
 void
 enternotify(XEvent *e)
@@ -863,7 +865,7 @@ enternotify(XEvent *e)
 		return;
 	focus(c);
 }
-
+#if 0
 void
 expose(XEvent *e)
 {
@@ -873,6 +875,7 @@ expose(XEvent *e)
 	if (ev->count == 0 && (m = wintomon(ev->window)))
 		drawbar(m);
 }
+#endif
 
 void
 focus(Client *c)
@@ -896,7 +899,7 @@ focus(Client *c)
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
-	drawbars();
+//	drawbars();
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -1353,13 +1356,13 @@ propertynotify(XEvent *e)
 			break;
 		case XA_WM_HINTS:
 			updatewmhints(c);
-			drawbars();
+//			drawbars();
 			break;
 		}
 		if (ev->atom == XA_WM_NAME || ev->atom == netatom[NetWMName]) {
 			updatetitle(c);
-			if (c == c->mon->sel)
-				drawbar(c->mon);
+//			if (c == c->mon->sel)
+//				drawbar(c->mon);
 		}
 		if (ev->atom == netatom[NetWMWindowType])
 			updatewindowtype(c);
@@ -1482,7 +1485,7 @@ restack(Monitor *m)
 	XEvent ev;
 	XWindowChanges wc;
 
-	drawbar(m);
+//	drawbar(m);
 	if (!m->sel)
 		return;
 	if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
@@ -1642,8 +1645,8 @@ void setlayout(const Arg *arg)
 
     if (selmon->sel)
         arrange(selmon);
-    else
-        drawbar(selmon);
+ //   else
+  //      drawbar(selmon);
 }
 
 /* arg > 1.0 will set mfact absolutely */
@@ -1861,7 +1864,7 @@ tile(Monitor *m)
 				ty += HEIGHT(c);
 		}
 }
-
+#if 0
 void
 togglebar(const Arg *arg)
 {
@@ -1870,6 +1873,7 @@ togglebar(const Arg *arg)
 	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
 	arrange(selmon);
 }
+#endif
 
 void
 togglefloating(const Arg *arg)
@@ -2176,7 +2180,7 @@ updatestatus(void)
 		statusw += TEXTW(text) - lrpad + 2;
 
 	}
-	drawbar(selmon);
+//	drawbar(selmon);
 }
 
 void

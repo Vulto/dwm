@@ -3,13 +3,13 @@
 /* appearance */
 static const unsigned int borderpx  = 1;	/* border pixel of windows */
 static const unsigned int snap      = 5;	/* snap pixel */
-static const int showbar            = 1;	/* 0 means no bar */
-static const int topbar             = 1;	/* 0 means bottom bar */
-static const char *fonts[]          = { "xos4 terminus:size=12" };
+static const int showbar            = 0;	/* 0 means no bar */
+//static const int topbar             = 1;	/* 0 means bottom bar */
+static const char *fonts[]          = { "xos4 terminus:size=13" };
 static const char dmenufont[]       = "xos4 terminus:size=13";
 static const char col_1[]				= "#181818";
-static const char col_2[]				= "#666666";
-static const char col_3[]				= "#ebdbb2";
+static const char col_2[]				= "#888888";
+static const char col_3[]				= "#e9d9b9";
 static const char col_4[]				= "#000000";
 static const char *colors[][3]      = {
 	/*               fg     bg     border */
@@ -40,7 +40,6 @@ static const Rule rules[] = {
 	{ "Open file",  NULL,   NULL,		0,		1,		-1 },
 	{ "YAD",        NULL,   NULL,		0,		1,		-1 },
 	{ "sent",       NULL,   NULL,		0,		1,		-1 },
-	{ "st",         NULL,   NULL,		0,		1,		-1 },
 	{ "imv",        NULL,   NULL,		0,		1,		-1 },
 };
 
@@ -71,7 +70,7 @@ static Key keys[] = {
     /* modifier         key				  			function	    argument */
     { MODKEY,           XK_d,						spawn,			SHCMD("dmenu_run") },
     { MODKEY,           XK_Return,					spawn,			SHCMD("st") },
-    { MODKEY,           XK_b,						togglebar,		{0} },
+//    { MODKEY,           XK_b,						togglebar,		{0} },
     { MODKEY,           XK_j,						focusstack,		{.i = +1 } },
     { MODKEY,           XK_k,						focusstack,		{.i = -1 } },
     { MODKEY,           XK_equal,					incnmaster,		{.i = +1 } },
