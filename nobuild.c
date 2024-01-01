@@ -7,7 +7,7 @@
 #define VERSION "6.4"
 #define MANPREFIX "/usr/local/share/man"
 
-#define CFLAGS	"-g", 						\
+#define CFLAGS	"-g",			\
 	"-std=c99", 				\
 	"-pedantic",				\
 	"-Wall",					\
@@ -21,11 +21,11 @@
 	"-O3"
 
 #define LDFLAGS "-L/usr/X11R6/lib", \
-	"-lX11", 			\
-	"-lXinerama", 		\
-	"-lfontconfig",		\
-	"-lXft", 			\
-	"-lXrender"
+				"-lX11", 			\
+				"-lXinerama", 		\
+				"-lfontconfig",		\
+				"-lXft", 			\
+				"-lXrender"
 
 static const char *SOURCES[]={"drw.c", "dwm.c", "util.c"};
 static const char *OBJECTS[]={"drw.o", "dwm.o", "util.o"};
@@ -41,7 +41,7 @@ void BuildObj(void) {
 	}
 }
 
-int BuildBin(void) {
+void BuildBin(void) {
 	for(int i=0; i <= 2; i++ ){
 		CMD(cc(), "-o", BIN, OBJECTS[0], OBJECTS[1], OBJECTS[2], LDFLAGS, NULL );
 	}
@@ -57,7 +57,7 @@ void Remove(void) {
 
 void Clean(void) {
 	size_t objarr = (sizeof(OBJECTS) / sizeof(OBJECTS[1]));
-	for (int i=0; i < objarr ; i++) {
+	for ( unsigned long int i=0; i < objarr ; i++) {
 		CMD("rm", OBJECTS[i]);
 	}
 	CMD("rm", BIN, "c.old");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 		char *arg = argv[i];
 
 		if (arg[0] == '-') {
-			for (int j = 1; j < strlen(arg); j++) {
+			for (unsigned long int j = 1; j < strlen(arg); j++) {
 
 				switch (arg[j]) {
 					case 'r':

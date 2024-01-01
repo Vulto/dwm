@@ -4,9 +4,7 @@
 static const unsigned int borderpx  = 1;	/* border pixel of windows */
 static const unsigned int snap      = 5;	/* snap pixel */
 static const int showbar            = 0;	/* 0 means no bar */
-//static const int topbar             = 1;	/* 0 means bottom bar */
-static const char *fonts[]          = { "xos4 terminus:size=14" };
-static const char dmenufont[]       = "xos4 terminus:size=14";
+static const char *fonts[]          = { "xos4 terminus:size=16" };
 static const char col_1[]				= "#181818";
 static const char col_2[]				= "#888888";
 static const char col_3[]				= "#e9d9b9";
@@ -19,7 +17,7 @@ static const char *colors[][3]      = {
 
 /* Auto start some programms */
 static const char *const autostart[] = {
-	"stmux", NULL,
+	"st", "-e", "tmux", NULL,
 	"setxkbmap", "-option", "caps:swapescape", NULL,
 	"xset", "r","rate","180","25", "m","0","0", "-dpms", "s", "off", NULL,
 	"unclutter","--timeout","1", NULL,
@@ -40,8 +38,6 @@ static const Rule rules[] = {
 /* class      instance	title	tags_mask	sfloating	monitor */
 	{ "Open file",  NULL,   NULL,		0,		1,		-1 },
 	{ "YAD",        NULL,   NULL,		0,		1,		-1 },
-	{ "sent",       NULL,   NULL,		0,		1,		-1 },
-	{ "imv",        NULL,   NULL,		0,		1,		-1 },
 };
 
 /* layout(s) */
@@ -64,48 +60,46 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
-#define STATUSBAR "dwmblocks"
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 static Key keys[] = {
-    /* modifier         key				  			function	    argument */
-    { MODKEY,           XK_d,						spawn,			SHCMD("dmenu_run") },
-    { MODKEY,           XK_Return,					spawn,			SHCMD("st") },
-//    { MODKEY,           XK_b,						togglebar,		{0} },
-    { MODKEY,           XK_j,						focusstack,		{.i = +1 } },
-    { MODKEY,           XK_k,						focusstack,		{.i = -1 } },
-    { MODKEY,           XK_equal,					incnmaster,		{.i = +1 } },
-    { MODKEY,           XK_minus,					incnmaster,		{.i = -1 } },
-    { MODKEY,           XK_h,						setmfact,		{.f = -0.05} },
-    { MODKEY,           XK_l,						setmfact,		{.f = +0.05} },
-    { MODKEY,	      	XK_z,						zoom,			{0} },
-    { MODKEY,           XK_Tab,						view,			{0} },
-    { MODKEY,           XK_c,						killclient,		{0} },
-    { ControlMask, 		XK_1,						setlayout,		{.v = &layouts[0]} },
-    { ControlMask, 		XK_2,						setlayout,		{.v = &layouts[1]} },
-    { ControlMask, 		XK_3,						setlayout,		{.v = &layouts[2]} },
-	{ MODKEY,			XK_o,						setlayout,      {.v = &layouts[4]} },
-    { MODKEY,			XK_space,					togglefloating, {0} },
-    { MODKEY,           XK_0,						view,			{.ui = ~0 } },
-    { MODKEY|ShiftMask, XK_0,						tag,			{.ui = ~0 } },
-    { MODKEY,           XK_comma,					focusmon,       {.i = -1 } },
-    { MODKEY,           XK_period,					focusmon,       {.i = +1 } },
-    { MODKEY|ShiftMask, XK_comma,					tagmon,         {.i = -1 } },
-    { MODKEY|ShiftMask, XK_period,					tagmon,         {.i = +1 } },
-    { MODKEY,           XK_f,						spawn,          SHCMD("kis -f | dmenu -l 100 | xargs -0 nopen") },
-    { 0,  		       	XK_Print,					spawn,          SHCMD("scrot") },
-    { MODKEY, 	        XK_Print,					spawn,          SHCMD("scrot -s") },
-    { MODKEY,           XK_End,						spawn,          SHCMD("doas pkill -kill -t tty1") },
-    { MODKEY,           XK_Home,					spawn,          SHCMD("slock") },
-    { 0,                XF86XK_AudioLowerVolume,	spawn,          SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -1%") },
-    { 0,                XF86XK_AudioMute,			spawn,          SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle") },
-    { 0,                XF86XK_AudioRaiseVolume,	spawn,          SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +1%") },
-    { 0,                XF86XK_AudioPrev,			spawn,          SHCMD("playerctl previous" ) },
-    { 0,                XF86XK_AudioPause,			spawn,          SHCMD("playerctl pause") },
-    { 0,                XF86XK_AudioNext,			spawn,          SHCMD("playerctl next") },
-    { 0,                XF86XK_WLAN,				spawn,          SHCMD("rfkill unblock wifi") },
-    TAGKEYS(            XK_1,                      0)
+  /* modifier         key				  			function	    argument */
+  { MODKEY,           XK_d,						spawn,			SHCMD("dmenu_run") },
+  { MODKEY,           XK_Return,					spawn,			SHCMD("st") },
+  { MODKEY,           XK_j,						focusstack,		{.i = +1 } },
+  { MODKEY,           XK_k,						focusstack,		{.i = -1 } },
+  { MODKEY,           XK_equal,					incnmaster,		{.i = +1 } },
+  { MODKEY,           XK_minus,					incnmaster,		{.i = -1 } },
+  { MODKEY,           XK_h,						setmfact,		{.f = -0.05} },
+  { MODKEY,           XK_l,						setmfact,		{.f = +0.05} },
+  { MODKEY,	      	  XK_z,						zoom,			{0} },
+  { MODKEY,           XK_Tab,						view,			{0} },
+  { MODKEY,           XK_c,						killclient,		{0} },
+  { ControlMask, 		  XK_1,						setlayout,		{.v = &layouts[0]} },
+  { ControlMask, 		  XK_2,						setlayout,		{.v = &layouts[1]} },
+  { ControlMask, 		  XK_3,						setlayout,		{.v = &layouts[2]} },
+  { MODKEY,			      XK_o,						setlayout,      {.v = &layouts[4]} },
+  { MODKEY,			      XK_space,					togglefloating, {0} },
+  { MODKEY,           XK_0,						view,			{.ui = ~0 } },
+  { MODKEY|ShiftMask, XK_0,						tag,			{.ui = ~0 } },
+  { MODKEY,           XK_comma,					focusmon,       {.i = -1 } },
+  { MODKEY,           XK_period,					focusmon,       {.i = +1 } },
+  { MODKEY|ShiftMask, XK_comma,					tagmon,         {.i = -1 } },
+  { MODKEY|ShiftMask, XK_period,					tagmon,         {.i = +1 } },
+  { MODKEY,           XK_f,						spawn,          SHCMD("kis -f | dmenu -l 100 | xargs -0 nopen") },
+  { 0,  		       	  XK_Print,					spawn,          SHCMD("scrot") },
+  { MODKEY, 	        XK_Print,					spawn,          SHCMD("scrot -s") },
+  { MODKEY,           XK_End,						spawn,          SHCMD("doas pkill -kill -t tty1") },
+  { MODKEY,           XK_Home,					spawn,          SHCMD("slock") },
+  { 0,                XF86XK_AudioLowerVolume,	spawn,          SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -1%") },
+  { 0,                XF86XK_AudioMute,			spawn,          SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle") },
+  { 0,                XF86XK_AudioRaiseVolume,	spawn,          SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +1%") },
+  { 0,                XF86XK_AudioPrev,			spawn,          SHCMD("playerctl previous" ) },
+  { 0,                XF86XK_AudioPause,			spawn,          SHCMD("playerctl pause") },
+  { 0,                XF86XK_AudioNext,			spawn,          SHCMD("playerctl next") },
+  { 0,                XF86XK_WLAN,				spawn,          SHCMD("rfkill unblock wifi") },
+  TAGKEYS(            XK_1,                      0)
     TAGKEYS(            XK_2,                      1)
     TAGKEYS(            XK_3,                      2)
     TAGKEYS(            XK_4,                      3)
@@ -131,7 +125,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
-	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
-	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
 };
