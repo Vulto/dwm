@@ -162,10 +162,7 @@ static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
-//static void drawbar(Monitor *m);
-//static void drawbars(void);
 static void enternotify(XEvent *e);
-//static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
@@ -210,8 +207,6 @@ static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
-static void tile(Monitor *m);
-//static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -256,7 +251,6 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
-//	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
 	[MappingNotify] = mappingnotify,
@@ -286,7 +280,7 @@ static size_t autostart_len;
 
 /* execute command from autostart array */
 static void
-autostart_exec() {
+autostart_exec(void) {
 	const char *const *p;
 	size_t i = 0;
 
@@ -709,8 +703,6 @@ createmon(void)
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
 	m->nmaster = nmaster;
-	m->showbar = showbar;
-//	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -765,85 +757,6 @@ dirtomon(int dir)
 	return m;
 }
 
-#if 0
-void
-drawbar(Monitor *m)
-{
-	int x, w, tw = 0;
-	int boxs = drw->fonts->h / 9;
-	int boxw = drw->fonts->h / 6 + 2;
-	unsigned int i, occ = 0, urg = 0;
-	Client *c;
-
-	if (!m->showbar)
-		return;
-
-	/* draw status first so it can be overdrawn by tags later */
-	if (m == selmon) { /* status is only drawn on selected monitor */
-		char *text, *s, ch;
-		drw_setscheme(drw, scheme[SchemeNorm]);
-
-		x = 0;
-		for (text = s = stext; *s; s++) {
-			if ((unsigned char)(*s) < ' ') {
-				ch = *s;
-				*s = '\0';
-				tw = TEXTW(text) - lrpad;
-				drw_text(drw, m->ww - statusw + x, 0, tw, bh, 0, text, 0);
-				x += tw;
-				*s = ch;
-				text = s + 1;
-			}
-		}
-		tw = TEXTW(text) - lrpad + 2;
-		drw_text(drw, m->ww - statusw + x, 0, tw, bh, 0, text, 0);
-		tw = statusw;
-	}
-
-	for (c = m->clients; c; c = c->next) {
-		occ |= c->tags;
-		if (c->isurgent)
-			urg |= c->tags;
-	}
-	x = 0;
-	for (i = 0; i < LENGTH(tags); i++) {
-		w = TEXTW(tags[i]);
-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
-		x += w;
-	}
-	w = TEXTW(m->ltsymbol);
-	drw_setscheme(drw, scheme[SchemeNorm]);
-	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
-
-	if ((w = m->ww - tw - x) > bh) {
-		if (m->sel) {
-			int mid = (m->ww - TEXTW(m->sel->name)) / 2 - x;
-			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, mid, m->sel->name, 0);
-			if (m->sel->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-		} else {
-			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_rect(drw, x, 0, w, bh, 1, 1);
-		}
-	}
-	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
-}
-
-void
-drawbars(void)
-{
-	Monitor *m;
-
-	for (m = mons; m; m = m->next)
-		drawbar(m);
-}
-#endif // DRAWBAR
 
 void
 enternotify(XEvent *e)
@@ -863,17 +776,7 @@ enternotify(XEvent *e)
 		return;
 	focus(c);
 }
-#if 0
-void
-expose(XEvent *e)
-{
-	Monitor *m;
-	XExposeEvent *ev = &e->xexpose;
 
-	if (ev->count == 0 && (m = wintomon(ev->window)))
-		drawbar(m);
-}
-#endif
 
 void
 focus(Client *c)
@@ -897,7 +800,6 @@ focus(Client *c)
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
-//	drawbars();
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -1380,13 +1282,10 @@ propertynotify(XEvent *e)
 			break;
 		case XA_WM_HINTS:
 			updatewmhints(c);
-//			drawbars();
 			break;
 		}
 		if (ev->atom == XA_WM_NAME || ev->atom == netatom[NetWMName]) {
 			updatetitle(c);
-//			if (c == c->mon->sel)
-//				drawbar(c->mon);
 		}
 		if (ev->atom == netatom[NetWMWindowType])
 			updatewindowtype(c);
@@ -1509,7 +1408,6 @@ restack(Monitor *m)
 	XEvent ev;
 	XWindowChanges wc;
 
-//	drawbar(m);
 	if (!m->sel)
 		return;
 	if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
@@ -1669,8 +1567,6 @@ void setlayout(const Arg *arg)
 
     if (selmon->sel)
         arrange(selmon);
- //   else
-  //      drawbar(selmon);
 }
 
 /* arg > 1.0 will set mfact absolutely */
@@ -1844,48 +1740,6 @@ tagmon(const Arg *arg)
 }
 
 void
-tile(Monitor *m)
-{
-	unsigned int i, n, h, mw, my, ty, bw;
-	Client *c;
-
-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
-
-	if (n == 1)
-		bw = 0;
-	else
-		bw = borderpx;
-	if (n > m->nmaster)
-		mw = m->nmaster ? m->ww * m->mfact : 0;
-	else
-		mw = m->ww;
-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-		if (i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-			resize(c, m->wx, m->wy + my, mw - 2*bw, h - 2*bw, bw, 0);
-			if (my + HEIGHT(c) < m->wh)
-				my += HEIGHT(c);
-		} else {
-			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - 2*bw, h - 2*bw, bw, 0);
-			if (ty + HEIGHT(c) < m->wh)
-				ty += HEIGHT(c);
-		}
-}
-#if 0
-void
-togglebar(const Arg *arg)
-{
-	selmon->showbar = !selmon->showbar;
-	updatebarpos(selmon);
-	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
-	arrange(selmon);
-}
-#endif
-
-void
 togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
@@ -2017,7 +1871,7 @@ updatebarpos(Monitor *m)
 }
 
 void
-updateclientlist()
+updateclientlist(void)
 {
 	Client *c;
 	Monitor *m;
@@ -2190,7 +2044,6 @@ updatestatus(void)
 		statusw += TEXTW(text) - lrpad + 2;
 
 	}
-//	drawbar(selmon);
 }
 
 void

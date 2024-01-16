@@ -2,11 +2,11 @@
 #include "./nobuild.h"
 
 #define BIN "dwm"
+#define CC	"clang"
 #define OLD "c.old"
 #define PREFIX "/usr/local/bin/"
 #define VERSION "6.4"
 #define MANPREFIX "/usr/local/share/man"
-
 #define CFLAGS	"-g",			\
 	"-std=c99", 				\
 	"-pedantic",				\
@@ -30,20 +30,15 @@
 static const char *SOURCES[]={"drw.c", "dwm.c", "util.c"};
 static const char *OBJECTS[]={"drw.o", "dwm.o", "util.o"};
 
-char *cc(void){
-	char *result = getenv("CC");
-	return result ? result : "cc";
-}
-
-void BuildObj(void) {
+void Compile(void) {
 	for(int i=0; i <= 2; i++ ){
-		CMD(cc(), "-c", CFLAGS, SOURCES[i]);
+		CMD(CC, "-c", CFLAGS, SOURCES[i]);
 	}
 }
 
-void BuildBin(void) {
+void Link(void) {
 	for(int i=0; i <= 2; i++ ){
-		CMD(cc(), "-o", BIN, OBJECTS[0], OBJECTS[1], OBJECTS[2], LDFLAGS, NULL );
+		CMD(CC, "-o", BIN, OBJECTS[0], OBJECTS[1], OBJECTS[2], LDFLAGS, NULL );
 	}
 }
 
@@ -55,7 +50,7 @@ void Remove(void) {
 	CMD("doas", "rm", "-v", PREFIX""BIN);
 }
 
-void Clean(void) {
+void Wipe(void) {
 	size_t objarr = (sizeof(OBJECTS) / sizeof(OBJECTS[1]));
 	for ( unsigned long int i=0; i < objarr ; i++) {
 		CMD("rm", OBJECTS[i]);
@@ -66,8 +61,7 @@ void Clean(void) {
 int main(int argc, char *argv[]) {
 	GO_REBUILD_URSELF(argc, argv);
 	if (argc < 2 ){
-		BuildObj();
-		BuildBin();
+		printf("Usage: %s [-r] [-i] [-c]\n", argv[0]);
 		return EXIT_SUCCESS;
 	}
 
@@ -78,22 +72,15 @@ int main(int argc, char *argv[]) {
 			for (unsigned long int j = 1; j < strlen(arg); j++) {
 
 				switch (arg[j]) {
-					case 'r':
-						Remove();
-						break;
-					case 'i':
-						Install();
-						break;
-					case 'c':
-						Clean();
-						break;
-					default:
-						printf("Unknown option: %c\n", arg[j]);
-						break;
+					case 'c': Compile();	break;
+					case 'l': Link();	break;
+					case 'i': Install();	break;
+					case 'r': Remove(); 	break;
+					case 'w': Wipe();	break;
+					default: printf("Unknown option: %c\n", arg[j]);
+					break;
 				}
 			}
-		} else {
-			printf("Usage: %s [-r] [-i] [-c]\n", argv[0]);
 		}
 	}
 	return EXIT_SUCCESS;
