@@ -3,7 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 1;	/* border pixel of windows */
 static const unsigned int snap      = 5;	/* snap pixel */
-static const char *fonts[]          = { "xos4 terminus:size=16" };
+static const char *fonts[]          = { "xos4 terminus:size=18" };
 static const char col_1[]				= "#181818";
 static const char col_2[]				= "#888888";
 static const char col_3[]				= "#e9d9b9";
@@ -19,7 +19,6 @@ static const char *const autostart[] = {
 	"stmux.sh", NULL,
 	"setxkbmap", "-option", "caps:swapescape", NULL,
 	"xset", "r","rate","180","25", "m","0","0", "-dpms", "s", "off", NULL,
-	"unclutter","--timeout","1", NULL,
 	NULL /* terminate */
 };
 

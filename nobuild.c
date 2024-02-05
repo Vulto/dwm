@@ -46,7 +46,7 @@ void Install(void) {
 	CMD("doas", "cp", "-f", BIN, PREFIX);
 }
 
-void Remove(void) {
+void Uninstall(void) {
 	CMD("doas", "rm", "-v", PREFIX""BIN);
 }
 
@@ -56,6 +56,11 @@ void Wipe(void) {
 		CMD("rm", OBJECTS[i]);
 	}
 	CMD("rm", BIN, "c.old");
+}
+
+//This will  only work if you set dwm loop on you startx file or equivalent
+void Restart(void) {
+  CMD("doas", "killall", BIN);
 }
 
 int main(int argc, char *argv[]) {
@@ -72,11 +77,12 @@ int main(int argc, char *argv[]) {
 			for (unsigned long int j = 1; j < strlen(arg); j++) {
 
 				switch (arg[j]) {
-					case 'c': Compile();	break;
-					case 'l': Link();	break;
-					case 'i': Install();	break;
-					case 'r': Remove(); 	break;
-					case 'w': Wipe();	break;
+					case 'c': Compile();	  break;
+					case 'l': Link();	      break;
+					case 'i': Install();	  break;
+					case 'r': Restart();	  break;
+					case 'u': Uninstall(); 	break;
+					case 'w': Wipe();	      break;
 					default: printf("Unknown option: %c\n", arg[j]);
 					break;
 				}
