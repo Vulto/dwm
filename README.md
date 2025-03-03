@@ -1,4 +1,4 @@
-## DWM - Dinamyc Window Manager
+## DWM - Dynamic Window Manager
 # Suckless fork patched for my personal use case
 
 # Build
